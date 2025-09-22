@@ -1,0 +1,6 @@
+.venv/
+.vscode/
+data/
+output/
+tests/_snapshots/
+*.pyc
