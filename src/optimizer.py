@@ -66,7 +66,7 @@ class AdamW(torch.optim.Optimizer):
 
                 if weight_decay != 0:
                     p.data -= lr * weight_decay * p.data    # Apply weight decay: θ ← θ − αλθ
-                state["t"], state["m"],state["v"]   = t, m, v
+                state["t"], state["m"], state["v"] = t, m, v
         return loss
 
 
