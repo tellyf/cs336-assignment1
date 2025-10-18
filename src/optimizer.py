@@ -46,23 +46,27 @@ class AdamW(torch.optim.Optimizer):
                 if t == 0:
                     state["m"] = torch.zeros_like(p.data)
                     state["v"] = torch.zeros_like(p.data)
+                """
+                g ← ∇θℓ(θ; Bt) (Compute the gradient of the loss at the current time step) 
+                m ← β1m + (1 − β1)g (Update the first moment estimate) 
+                v ← β2v + (1 − β2)g^2 (Update the second moment estimate) 
+                α_t ← α sqrt(1−(β2 )^t)/(1−(β1)^t) (Compute adjusted α for iteration t) 
+                θ ← θ − α_t * m / (sqrt(v)+ε) (Update the parameters) 
+                θ ← θ − αλθ (Apply weight decay)
+                """
                 m = state["m"]
                 v = state["v"]
                 grad = p.grad.data
-
+                
                 t += 1
                 m = beta1 * m + (1 - beta1) * grad
                 v = beta2 * v + (1 - beta2) * (grad * grad)
-                lr_t = lr * math.sqrt(1 - beta2**t) / (1 - beta1**t)
+                lr_t = lr * math.sqrt(1 - beta2**t) / (1 - beta1**t)  # 
                 p.data -= lr_t * m / (v**0.5 + eps)
 
                 if weight_decay != 0:
-                    p.data -= lr * weight_decay * p.data
-
-                state["t"] = t
-                state["m"] = m
-                state["v"] = v
-
+                    p.data -= lr * weight_decay * p.data    # Apply weight decay: θ ← θ − αλθ
+                state["t"], state["m"],state["v"]   = t, m, v
         return loss
 
 
